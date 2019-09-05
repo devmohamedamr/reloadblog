@@ -1,5 +1,9 @@
 <?php
+session_start();
 
+if(empty($_SESSION['login'])){
+    header("LOCATION: ../login.php");
+}
 require_once "../libs/user.php";
 $pageName = " add new user";
 
@@ -200,7 +204,7 @@ if(isset($_POST['fullname'])){
                                     <a href="#" class="btn btn-default btn-flat">Profile</a>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                    <a href="../logout.php" class="btn btn-default btn-flat">Sign out</a>
                                 </div>
                             </li>
                         </ul>
@@ -252,8 +256,8 @@ if(isset($_POST['fullname'])){
             </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="../../index.html"><i class="fa fa-circle-o"></i>Users</a></li>
-                        <li><a href="../../index2.html"><i class="fa fa-circle-o"></i>Add new user</a></li>
+                        <li><a href="allusers.php"><i class="fa fa-circle-o"></i>Users</a></li>
+                        <li><a href="addnewuser.php"><i class="fa fa-circle-o"></i>Add new user</a></li>
                     </ul>
                 </li>
                 <li class="treeview">

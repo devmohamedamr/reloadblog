@@ -4,11 +4,28 @@ session_start();
 if(empty($_SESSION['login'])){
     header("LOCATION: ../login.php");
 }
-require_once "../libs/user.php";
-$pageName = " all users user";
+require_once "../libs/post.php";
+$pageName = " add new post";
 
+if(isset($_POST['title'])){
 
-$users = ShowUser();
+    // -----------------------------
+    $title = $_POST['title'];
+    $artical = $_POST['artical'];
+    $user_id = $_SESSION['login']['id'];
+    // ----------- img --------------
+    $imgname = $_FILES['img']['name'];
+    $tmp = $_FILES['img']['tmp_name'];
+    move_uploaded_file($tmp,"../img/".$imgname);
+    //-----------------------------------
+
+    $post =  AddNewPost($title,$artical,$imgname,$user_id);
+
+    $success = [];
+    if($post > 0){
+        $success[] = "added success";
+    }
+}
 
 ?>
 
@@ -318,35 +335,39 @@ $users = ShowUser();
                 <div class="box-body">
 
 
-                    <div class="box">
-                        <div class="box-header">
-                            <h3 class="box-title">all users</h3>
+
+                    <div class="box box-info">
+                        <div class="box-header with-border">
                         </div>
                         <!-- /.box-header -->
-                        <div class="box-body no-padding">
-                            <table class="table table-striped">
-                                <tr>
-                                    <th style="width: 10px">#</th>
-                                    <th>fullname</th>
-                                    <th>email</th>
-                                    <th style="width: 40px">img</th>
-                                    <th style="width: 40px">control</th>
-                                </tr>
-                                <?php foreach ($users as $u): ?>
-                                <tr>
-                                    <td><?= $u['id']; ?></td>
-                                    <td><?= $u['name']; ?></td>
-                                    <td><?= $u['email']; ?></td>
-                                    <td><img width="100px" height="100px" src="../img/<?= $u['img']; ?>" /></td>
-                                    <td><a href="deleteuser.php?id=<?= $u['id']; ?>">delete</a></td>
+                        <!-- form start -->
+                        <form class="form-horizontal" action="addnewpost.php" method="post" enctype="multipart/form-data">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label for="inputEmail3" class="col-sm-2 control-label">title</label>
 
-                                </tr>
-                                <?php endforeach; ?>
-                            </table>
-                        </div>
-                        <!-- /.box-body -->
+                                    <div class="col-sm-10">
+                                        <input type="text" name="title" class="form-control" id="inputEmail3" placeholder="title">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                      <textarea id="editor1" name="artical" rows="10" cols="80">
+                                      </textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="exampleInputFile">img</label>
+                                    <input type="file" name="img" id="exampleInputFile">
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+                                <input type="submit" class="btn btn-info pull-right" value="add new post" />
+                            </div>
+                            <!-- /.box-footer -->
+                        </form>
                     </div>
-
 
 
 
@@ -581,9 +602,20 @@ $users = ShowUser();
 <script src="../design/back/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="../design/back/dist/js/demo.js"></script>
+<script src="../design/back/bower_components/ckeditor/ckeditor.js"></script>
+
 <script>
     $(document).ready(function () {
         $('.sidebar-menu').tree()
+    })
+</script>
+<script>
+    $(function () {
+        // Replace the <textarea id="editor1"> with a CKEditor
+        // instance, using default configuration.
+        CKEDITOR.replace('editor1')
+        //bootstrap WYSIHTML5 - text editor
+        $('.textarea').wysihtml5()
     })
 </script>
 </body>
