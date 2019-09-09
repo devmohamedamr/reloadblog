@@ -1,6 +1,21 @@
 <?php
 
-function ShowPost(){
+function ShowPost($extra= ''){
+    $con = mysqli_connect("localhost","root","","reloadblog");
+
+    $query = "SELECT * FROM `post` $extra";
+    $q = mysqli_query($con,$query);
+
+    $posts = [];
+
+    while($post = mysqli_fetch_assoc($q)){
+        $posts[] = $post;
+    }
+
+
+
+
+    return $posts;
 
 }
 

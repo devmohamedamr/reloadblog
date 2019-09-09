@@ -16,10 +16,13 @@ if(isset($_POST['fullname'])){
     // ----------- img --------------
     $imgname = $_FILES['img']['name'];
     $tmp = $_FILES['img']['tmp_name'];
-    move_uploaded_file($tmp,"../img/".$imgname);
+    $type = $_FILES['img']['type'];
+    $ex = explode("/",$type);
+    $NewImgName = $email.".".$ex[1];
+    move_uploaded_file($tmp,"../img/".$NewImgName);
     //-----------------------------------
 
-  $user =  AddNewUser($fullname,$password,$email,$imgname);
+  $user =  AddNewUser($fullname,$password,$email,$NewImgName);
 
   $success = [];
   if($user > 0){
@@ -268,8 +271,8 @@ if(isset($_POST['fullname'])){
             </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="../../index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-                        <li><a href="../../index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
+                        <li><a href="addnewpost.php"><i class="fa fa-circle-o"></i> add post</a></li>
+                        <li><a href="allposts.php"><i class="fa fa-circle-o"></i> all posts</a></li>
                     </ul>
                 </li>
                 <li class="treeview">

@@ -2,12 +2,28 @@
 
 // user functions
 
+function ShowUserName($user_id){
+    $con = mysqli_connect("localhost","root","","reloadblog");
 
-function ShowUser(){
+    $query = "SELECT * FROM `user` WHERE `id` = $user_id";
+    $q = mysqli_query($con,$query);
+
+    $users = [];
+
+    while($user = mysqli_fetch_assoc($q)){
+        $users[] = $user;
+    }
+
+
+    return $users[0]['name'];
+
+}
+
+function ShowUser($extra = ''){
 
     $con = mysqli_connect("localhost","root","","reloadblog");
 
-    $query = "SELECT * FROM `user`";
+    $query = "SELECT * FROM `user` $extra";
     $q = mysqli_query($con,$query);
 
     $users = [];
@@ -38,7 +54,17 @@ function AddNewUser($fullname,$password,$email,$imgname){
 }
 
 
-function UpdateUserInfo(){
+function UpdateUserInfo($id,$fullname,$password,$email,$imgname){
+    $con = mysqli_connect("localhost","root","","reloadblog");
+
+    $query = "UPDATE `user` SET `name`= '$fullname' , `password` = '$password' , `email` = '$email' , `img` = '$imgname' WHERE  `id` = $id";
+    $q = mysqli_query($con,$query);
+
+    $affected = mysqli_affected_rows($con);
+
+    if($affected>0){
+        return true;
+    }
 
 }
 
