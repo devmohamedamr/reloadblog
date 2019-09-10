@@ -2,14 +2,24 @@
 
 require_once "libs/post.php";
 require_once "libs/user.php";
+require_once "libs/comment.php";
 
+require_once "libs/general.php";
+
+//echo time_ago(1568141138 );die;
 if($_GET['postid']){
     $post_id = $_GET['postid'];
     $extra = "WHERE `id` = $post_id";
     $post = ShowPost($extra);
 
+    $comments = ShowCommentByPost($post_id);
+
+
+
 
 }
+
+
 
 
 ?>
@@ -251,71 +261,39 @@ if($_GET['postid']){
 
                     <div class="media-list">
 
+                        <?php foreach ($comments as $comment): ?>
                         <div class="media">
                             <img class="rounded-circle w-40" src="assets/img/avatar/1.jpg" alt="...">
 
                             <div class="media-body">
                                 <p class="fs-14">
-                                    <strong>Maryam Amiri</strong>
-                                    <time class="ml-16 opacity-70 fs-12" datetime="2017-07-14 20:00">24 min ago</time>
+                                    <strong><?=$comment['name']; ?></strong>
+                                    <time class="ml-16 opacity-70 fs-12" datetime="<?php time_ago($comment['created_at']); ?>"><?= time_ago($comment['created_at']);?></time>
                                 </p>
-                                <p class="fs-13">Efficiently synthesize high standards in processes rather than premier models. Continually coordinate parallel schemas through turnkey deliverables. Compellingly expedite viral infrastructures.</p>
+                                <p class="fs-13"><?=$comment['comment'];?></p>
                             </div>
                         </div>
+                    <?php endforeach; ?>
 
-
-
-                        <div class="media">
-                            <img class="rounded-circle w-40" src="assets/img/avatar/2.jpg" alt="...">
-
-                            <div class="media-body">
-                                <p class="fs-14">
-                                    <strong>Hossein Shams</strong>
-                                    <time class="ml-16 opacity-70 fs-12" datetime="2017-07-14 20:00">6 hours ago</time>
-                                </p>
-                                <p class="fs-13">Energistically iterate cross functional best practices after.</p>
-                            </div>
-                        </div>
-
-
-
-                        <div class="media">
-                            <img class="rounded-circle w-40" src="assets/img/avatar/3.jpg" alt="...">
-
-                            <div class="media-body">
-                                <p class="fs-14">
-                                    <strong>Sarah Hanks</strong>
-                                    <time class="ml-16 opacity-70 fs-12" datetime="2017-07-14 20:00">Yesterday</time>
-                                </p>
-                                <p class="fs-13">Appropriately streamline backward-compatible ideas through high standards in benefits. Intrinsicly communicate granular.</p>
-                            </div>
-                        </div>
+                        <div id="commentadd" class="media"></div>
 
                     </div>
 
 
                     <hr>
 
-
-                    <form action="#" method="POST">
-
+                        <input type="hidden" name="post_id" id="postid" value="<?=$_GET['postid']?>">
                         <div class="row">
                             <div class="form-group col-12 col-md-6">
-                                <input class="form-control" type="text" placeholder="Name">
-                            </div>
-
-                            <div class="form-group col-12 col-md-6">
-                                <input class="form-control" type="text" placeholder="Email">
+                                <input class="form-control" id="name" type="text" name="name" placeholder="Name">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <textarea class="form-control" placeholder="Comment" rows="4"></textarea>
+                            <textarea class="form-control" id="comment" name="comment" placeholder="Comment" rows="4"></textarea>
                         </div>
 
-                        <button class="btn btn-primary btn-block" type="submit">Submit your comment</button>
-                    </form>
-
+                        <button class="btn btn-primary btn-block" onclick="addcomment()"  name="send">Submit your comment</button>
                 </div>
             </div>
 
@@ -377,7 +355,31 @@ if($_GET['postid']){
 </footer>
 <!-- END Footer -->
 
+<script src="design/back/bower_components/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    function addcomment() {
 
+       var postid = $('#postid').val();
+       var name = $('#name').val();
+       var comment = $('#comment').val();
+
+        $.ajax({
+            type: 'POST',
+            url: 'comment.php',
+            data: 'name=' +  name + '&comment=' + comment + '&postid=' + postid,
+            dataType: 'json',
+            success: function (resp) {
+
+            $('#commentadd').append(resp);
+
+            },
+            error: function () {
+                alert('Error');
+            }
+        });
+    }
+
+</script>
 
 <!-- Scripts -->
 <script src="design/front/assets/js/core.min.js"></script>
